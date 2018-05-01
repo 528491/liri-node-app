@@ -15,7 +15,44 @@ var spotifyCommand = "spotify-this-song";
 var movieCommand = "movie-this";
 var doWhatItSaysCommand = "do-what-it-says";
 
+//In order to execute code both when called with parameters on the command line as well as execute commands
+//From a text file, we will need to encapsulate the functionality (and key parameters) into an object.
+
+var apiRequester = {
+
+    getTweets(){
+            var params = {screen_name: "roswellforever2"};
+            client.get("statuses/user_timeline", params, function(error, tweets, response){
+            if (error){
+                console.log(error);
+            }
+            else {
+                //User may have less than 20 tweets
+                if (tweets.length < 20){
+                    for (tweetIndex in tweets){
+                        console.log(tweets[tweetIndex].text);
+                    }
+                }
+                else {
+                    for (tweetIndex = 0; tweetIndex < 20; tweetIndex++){
+                        console.log(tweets[tweetIndex].text);
+                    }
+                }
+            }
+        })
+    },
+
+    searchSpotifySong(){
+
+    },
+
+    getMovieInfo(){
+
+    }
+}
+
 if (command == twitterCommand){
+    /*
     var params = {screen_name: "roswellforever2"};
     client.get("statuses/user_timeline", params, function(error, tweets, response){
         if (error){
@@ -35,7 +72,10 @@ if (command == twitterCommand){
             }
         }
     })
+    */
+   apiRequester.getTweets();
 }
+
 
 if (command == spotifyCommand){
     //Set Default Song
