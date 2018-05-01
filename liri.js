@@ -33,13 +33,61 @@ if (command == twitterCommand){
                     console.log(tweets[tweetIndex].text);
                 }
             }
-
         }
     })
 }
 
 if (command == spotifyCommand){
+    //Set Default Song
+    var song = "The Sign";
 
+    //Detect if the user actually entered a song name, and if so,
+    //update the song variable.
+    if (process.argv[3] != null){
+        //Obtain all the elements of the song name, condense to a single string,
+        //then update the song variable.
+        song = "";
+        for (index = 3; index < process.argv.length; index++){
+            song = song + " " + process.argv[index];
+            song = song.trim();
+        }
+    }
+
+    spotify.search({type: "track", query: song}, function(error, data){
+        if (error){
+            console.log(error);
+        }
+        else {
+            var songData = data.tracks.items[0];
+
+            //Print out all the artists
+            var artistString = "Artists:";
+            for (artistIndex in songData.artists){
+                var artistObject = songData.artists[artistIndex];
+                var artistName = artistObject.name;
+                artistString = artistString + " | " + artistName + " | ";
+            }
+            console.log(artistString);
+            
+            //Print the Song Name
+            var songNameString = "Song Name: ";
+            songNameString = songNameString + songData.name;
+            console.log(songNameString);
+
+
+            //Print the Preview Link
+            var previewLinkString = "Preview Link: ";
+            previewLinkString = previewLinkString + songData.preview_url;
+            console.log(previewLinkString);
+
+            //Print the Album
+            var albumString = "Album: ";
+            albumString = albumString + songData.album.name;
+            console.log(albumString);
+            
+            //console.log(songData);
+        }
+    })
 }
 
 if (command == movieCommand){
