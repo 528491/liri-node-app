@@ -123,6 +123,13 @@ var apiRequester = {
                 var movieData = JSON.parse(response.body);
 
                 console.log("Title: " + movieData.Title);
+                console.log("Year: " + movieData.Year);
+                console.log("IMDB: "  + movieData.Ratings[0].Value);
+                console.log("Rotten Tomatoes: " + movieData.Ratings[1].Value);
+                console.log("Country: " + movieData.Country);
+                console.log("Language(s): " + movieData.Language);
+                console.log("Plot: " + movieData.Plot);
+                console.log("Actors: " + movieData.Actors);
             }
         });
 
