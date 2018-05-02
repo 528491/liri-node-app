@@ -120,7 +120,9 @@ var apiRequester = {
                 console.log(error);
             }
             else {
-                console.log(response);
+                var movieData = JSON.parse(response.body);
+
+                console.log("Title: " + movieData.Title);
             }
         });
 
