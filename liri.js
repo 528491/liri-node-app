@@ -2,6 +2,7 @@ require("dotenv").config();
 var Spotify = require("node-spotify-api");
 var Twitter = require("twitter");
 var Request = require("request");
+var fs = require("fs");
 var keys = require("./keys.js");
 
 var spotify = new Spotify(keys.spotify);
@@ -96,6 +97,32 @@ var apiRequester = {
     },
 
     getMovieInfo(){
+        var movieTitle = "Mr. Nobody";
+        var requestURL = "http://www.omdbapi.com/?i=tt3896198&apikey=403f45c4";
+
+        //ToDo - Make a single function that parses out commands and parameters into 
+        //separate units.
+        if (process.argv[3] != null){
+            //Obtain all the elements of the song name, condense to a single string,
+            //then update the song variable.
+            movieTitle = "";
+            for (index = 3; index < process.argv.length; index++){
+                movieTitle = movieTitle + " " + process.argv[index];
+                movieTitle = movieTitle.trim();
+            }
+        }
+
+        movieTitle.replace(" ", "+");
+        requestURL = requestURL + "&t=" + movieTitle;
+
+        Request(requestURL, function(error, response){
+            if (error){
+                console.log(error);
+            }
+            else {
+                console.log(response);
+            }
+        });
 
     }
 }
@@ -110,7 +137,7 @@ if (command == spotifyCommand){
 }
 
 if (command == movieCommand){
-
+    apiRequester.getMovieInfo();
 }
 
 if (command == doWhatItSaysCommand){
