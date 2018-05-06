@@ -174,13 +174,36 @@ function getCommandsFromFile(filePath){
             linesInFile = data.split("\n");
             
             //Each line can be further subdivided into two parts - a command and (possibly) a parameter
+            for (lineIndex in linesInFile){
+                var line = linesInFile[lineIndex];
+                var lineComponents = line.split(",");
+                //We must account for movie and song titles that have commas
+                //We know that commands will never have commas, hence we can always assume command = lineComponents[0];
+                var command = lineComponents[0];
+                //At this point there are two possibilities. Some commands will not have any additional parameters, while some will
+                //We can determine this by length
+                var commandAndParameter;
+                if (lineComponents.length == 1){
+                    commandAndParameter = new CommandAndParameter(command, null);
+                    commandsAndParameters.push(commandAndParameter);
+                }
+                else {
+                    //In the event that there are additional parameters, we need to ensure we capture them all and join() them back into a string
+                    var parameters = lineComponents;
+                    parameters.splice(0, 1);
+                    var parameter = parameters.join();
+                    commandAndParameter = new CommandAndParameter(command, parameter);
+                    commandsAndParameters.push(commandAndParameter);
+                }
+            }
         }
     });
     
+    return commandsAndParameters;
 
 }
 
 //Test Code
 /**/ 
 
-getCommandsFromFile("./random.txt");
+var commandsAndParameters = getCommandsFromFile("./random.txt");
