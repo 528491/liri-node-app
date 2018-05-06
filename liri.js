@@ -9,12 +9,16 @@ var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
 var command = process.argv[2];
+var arguments;
 
 //List out the commands as variables - separation of concerns
 var twitterCommand = "my-tweets";
 var spotifyCommand = "spotify-this-song";
 var movieCommand = "movie-this";
 var doWhatItSaysCommand = "do-what-it-says";
+
+//Encoding Type that will be used to read from random.txt. Placed here to centralize our concerns
+var encoding = "utf8";
 
 //In order to execute code both when called with parameters on the command line as well as execute commands
 //From a text file, we will need to encapsulate the functionality (and key parameters) into an object.
@@ -45,19 +49,19 @@ var apiRequester = {
 
     searchSpotifySong(){
         //Set Default Song
-    var song = "The Sign";
+        var song = "The Sign";
 
-    //Detect if the user actually entered a song name, and if so,
-    //update the song variable.
-    if (process.argv[3] != null){
-        //Obtain all the elements of the song name, condense to a single string,
-        //then update the song variable.
-        song = "";
-        for (index = 3; index < process.argv.length; index++){
-            song = song + " " + process.argv[index];
-            song = song.trim();
+        //Detect if the user actually entered a song name, and if so,
+        //update the song variable.
+        if (process.argv[3] != null){
+            //Obtain all the elements of the song name, condense to a single string,
+            //then update the song variable.
+            song = "";
+            for (index = 3; index < process.argv.length; index++){
+                song = song + " " + process.argv[index];
+                song = song.trim();
+            }
         }
-    }
 
     spotify.search({type: "track", query: song}, function(error, data){
         if (error){
@@ -132,7 +136,6 @@ var apiRequester = {
                 console.log("Actors: " + movieData.Actors);
             }
         });
-
     }
 }
 
@@ -152,3 +155,32 @@ if (command == movieCommand){
 if (command == doWhatItSaysCommand){
 
 }
+
+function CommandAndParameter(command, parameter){
+    this.command = command;
+    this.parameter = parameter;
+}
+
+function getCommandsFromFile(filePath){
+    
+    var commandsAndParameters = [];
+    var linesInFile;
+    fs.readFile(filePath, encoding, function(error, data){
+        if (error){
+            console.log(error);
+        }
+        else {
+            //Each line is a command and parameters (if applicable)
+            linesInFile = data.split("\n");
+            
+            //Each line can be further subdivided into two parts - a command and (possibly) a parameter
+        }
+    });
+    
+
+}
+
+//Test Code
+/**/ 
+
+getCommandsFromFile("./random.txt");
