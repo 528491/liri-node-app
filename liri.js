@@ -11,6 +11,10 @@ var client = new Twitter(keys.twitter);
 var command = process.argv[2];
 var arguments;
 
+
+//Create the command object up here using the constructor function defined below.
+//
+
 //List out the commands as variables - separation of concerns
 var twitterCommand = "my-tweets";
 var spotifyCommand = "spotify-this-song";
@@ -19,11 +23,18 @@ var doWhatItSaysCommand = "do-what-it-says";
 
 //Encoding Type that will be used to read from random.txt. Placed here to centralize our concerns
 var encoding = "utf8";
+var defaultFilePath = "./random.txt";
 
 //In order to execute code both when called with parameters on the command line as well as execute commands
 //From a text file, we will need to encapsulate the functionality (and key parameters) into an object.
 
 var apiRequester = {
+
+    processCommand(commandAndParameterObject){
+        if (commandAndParameterObject.command == twitterCommand){
+            this.getTweets();
+        }
+    },
 
     getTweets(){
             var params = {screen_name: "roswellforever2"};
@@ -153,7 +164,14 @@ if (command == movieCommand){
 }
 
 if (command == doWhatItSaysCommand){
-
+    var commandsToExecute = getCommandsFromFile(defaultFilePath);
+    //console.log(defaultFilePath);
+    //console.log(commandsToExecute);
+    for (commandIndex in commandsToExecute){
+        var command = commandsToExecute[commandIndex];
+        apiRequester.processCommand(command);
+        //console.log(command);
+    }
 }
 
 function CommandAndParameter(command, parameter){
@@ -162,8 +180,7 @@ function CommandAndParameter(command, parameter){
 }
 
 function getCommandsFromFile(filePath){
-    
-    var commandsAndParameters = [];
+
     var linesInFile;
     fs.readFile(filePath, encoding, function(error, data){
         if (error){
@@ -172,7 +189,7 @@ function getCommandsFromFile(filePath){
         else {
             //Each line is a command and parameters (if applicable)
             linesInFile = data.split("\n");
-            
+            var commandsAndParameters = [];
             //Each line can be further subdivided into two parts - a command and (possibly) a parameter
             for (lineIndex in linesInFile){
                 var line = linesInFile[lineIndex];
@@ -194,16 +211,19 @@ function getCommandsFromFile(filePath){
                     var parameter = parameters.join();
                     commandAndParameter = new CommandAndParameter(command, parameter);
                     commandsAndParameters.push(commandAndParameter);
+                    //console.log(commandsAndParameters);
                 }
-            }
+                //Return only when for loop has completed
+                if (lineIndex == linesInFile.length-1){
+                    return commandsAndParameters;
+                }
+
+            }            
         }
     });
-    
-    return commandsAndParameters;
-
 }
 
 //Test Code
-/**/ 
-
+/* 
 var commandsAndParameters = getCommandsFromFile("./random.txt");
+*/
